@@ -9,15 +9,14 @@
 }
 
 
-.spin {
-    animation: spin 1s linear infinite;
+.load {
     font-size: 40px;
     height: 40px;
     width: 40px;
+    align-items: center;
+  color: rgb(39, 87, 87);
   }
-  
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
+
+  .clearButton{
+       
   }

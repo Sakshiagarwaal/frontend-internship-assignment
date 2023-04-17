@@ -1,7 +1,7 @@
 <div class="header">
   <div class="tw-text-24-px tw-font-600">Open Books Library</div>
   <div class="search-button">
-    <mat-icon class="tw-mt-16-px" aria-label="Search Icon">search</mat-icon>
+    <mat-icon class="tw-mt-14-px" aria-label="Search Icon">search</mat-icon>
     <input
       [formControl]="bookSearch"
       name="searchKey"
@@ -9,10 +9,8 @@
       placeholder="Search Books"
       class="tw-border-0 tw-bg-inherit"
     >
-    <!-- <mat-icon class="tw-w-5 " aria-label="Cross Icon" *ngIf="showQueryReset" (click)="resetQuery()">close</mat-icon> -->
-    <div class="search-button tw-justify-center tw-items-center tw-py-2 tw-px-3 hover:tw-cursor-pointer" routerLink="/">
-      clear
-    </div>
+    <button class="tw-w-5" aria-label="Cross Icon"(click)="ClearSearch()">Clear</button>
+    <!-- <mat-icon class="tw-w-5 " aria-label="Cross Icon"  (click)="ClearSearch()">Clear</mat-icon> -->
   </div>
 </div>
 <div class="tw-flex">
@@ -20,35 +18,38 @@
     <section class="trending-subjects">
       <div class="tw-font-600 tw-text-24-px">Trending Subjects</div>
       <ul class="tw-list-none tw-pl-0">
-        <li class="tw-text-16-px tw-cursor-pointer tw-p-12-px" *ngFor="let subject of trendingSubjects" routerLink="/trending-subject/{{ subject.name }}">
+        <li class="tw-text-14-px tw-cursor-pointer tw-p-12-px" *ngFor="let subject of trendingSubjects" routerLink="/trending-subject/{{ subject.name }}">
           {{ subject.name }}
         </li>
       </ul>
     </section>
   </div>
-  <div class="tw-flex tw-flex-row tw-m-24-px">
-     <section class="all-books">
-        <div *ngIf="bookSearch.value.length === 0">
-          <div class="tw-font-600 tw-text-24-px">All Books</div>
-          <front-end-internship-assignment-table-view
-          [booksList]="allBooks"
-          ></front-end-internship-assignment-table-view>
-        </div>
-        <!-- <div class="tw-grid tw-place-content-center tw-h-full tw-w-full" *ngIf="state === 'loading'">
-          <mat-icon class="spin" aria-label="Loading">refresh</mat-icon>
-        </div> -->
-
-        <div *ngIf="bookSearch.value.length > 0 && searchedBooks.length === 0">
-          <div class="tw-font-600 tw-text-24-px">Search Books</div>
-          <div>No Books Found with the name of this book title or author</div>
-        </div>
-
-        <div *ngIf="bookSearch.value.length > 0 && searchedBooks.length > 0">
-          <div class="tw-font-600 tw-text-24-px">Searched Books</div>
-          <front-end-internship-assignment-table-view
-          [booksList]="searchedBooks"
-          ></front-end-internship-assignment-table-view>
-        </div>
-     </section>
-  </div>
+  <span class = "load" *ngIf="isLoading === true"> Loading... </span>
+  <div *ngIf="isLoading === false" class="tw-flex tw-flex-row tw-m-24-px">
+      <section class="all-books">
+         <div *ngIf="bookSearch.value?.length === 0">
+           <div class="tw-font-600 tw-text-24-px">All Books</div>
+           <front-end-internship-assignment-table-view
+           [booksList]="allBooks"
+           [topOrNext]="topOrNext"
+           ></front-end-internship-assignment-table-view>
+         </div>
+ 
+         <div *ngIf="bookSearch.value?.length > 0 && searchedBooks.length === 0">
+           <div class="tw-font-600 tw-text-24-px">Search Books</div>
+           <div>No Books Found with the name of this book title or author</div>
+         </div>
+ 
+         <div *ngIf="bookSearch.value?.length > 0 && searchedBooks.length > 0">
+           <div class="tw-font-600 tw-text-24-px">Searched Books</div>
+           <front-end-internship-assignment-table-view
+           [booksList]="searchedBooks"
+           [topOrNext]="topOrNext"
+           ></front-end-internship-assignment-table-view>
+           <button (click)="decrement()">Prev</button>
+           <span>Curr : {{currPage}} </span>
+           <button (click)="increment()">Next</button>
+         </div>
+      </section>
+   </div>
 </div>

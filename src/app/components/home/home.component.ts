@@ -26,16 +26,19 @@ export class HomeComponent implements OnInit {
     { name: 'Crypto' },
   ];
 
+  limit : number = 10
+
   allBooks: Book[] = [];
+  searchedAllBooks : Book[] = [];
   searchedBooks: Book[] = [];
   searchAuthor: Author[] = [];
-
-  
-
+  currPage : number = 0
 
   isLoading: boolean = true;
+  topOrNext : string = ""
 
   getAllBooks() {
+    this.topOrNext = "Top"
     this.trendingSubjects.forEach(subject => {
       this.subjectsService.getAllBooks(subject.name).subscribe((data) => {
         console.log("data",data?.works)
@@ -44,27 +47,53 @@ export class HomeComponent implements OnInit {
       });
     });
   }
-  clearSearch(): void {
-    this.allBooks = [];
-    this.searchedBooks = [];
+
+  ClearSearch(){
+    this.bookSearch.setValue("")
+  }
+
+  decrement(){
+
+    if( this.currPage == 0 ) {
+      this.isLoading = false;
+      return
+    } 
+
+    this.currPage = this.currPage - 1
+
+    if( this.currPage > 0 ) this.topOrNext = "Next"
+
+    this.searchedBooks = this.searchedAllBooks.splice(this.currPage*this.limit, this.limit)
+    this.isLoading = false;
+  }
+
+  increment(){
+    this.currPage = this.currPage + 1
+
+    if( this.currPage > 0 ) this.topOrNext = "Next"
+
+    this.searchedBooks = this.searchedAllBooks.splice(this.currPage*this.limit, this.limit)
+    this.isLoading = false;
   }
 
   searchBooks(value : string) {
+      this.currPage = 0
       if (value == ""){
         this.searchedBooks = []
+        this.isLoading = false;
         return;
       }
-
-      const limit = 10
       const reg = new RegExp(`${value}`, "gi");
-      this.searchedBooks = this.allBooks?.filter((book) => {
+      this.searchedAllBooks = this.allBooks?.filter((book) => {
             
          if( book.title?.match(reg) ) return true
          
          this.searchAuthor = book.authors?.filter((author : Author)=> author.name?.match(reg))
 
          return this.searchAuthor.length >0
-      }).sort().slice(0, limit);
+      }).sort()
+     this.searchedBooks = this.searchedAllBooks.splice(0, this.limit)
+     this.isLoading = false;
   }
 
   ngOnInit(): void {
@@ -80,10 +109,3 @@ export class HomeComponent implements OnInit {
     this.getAllBooks()
   }
 }
-// showQueryReset = false;
-
-//   resetQuery() {
-//     this.bookSearch.setValue('');
-//     this.searchedBooks = [];
-//     this.showQueryReset = false;
-//   }
